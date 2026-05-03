@@ -1,0 +1,255 @@
+name: E2E (Playwright Cloud)
+
+# PLANET-1513 — Stage 0 TDD red dashboard.
+# Cloud-side Playwright runs against the deployed Vercel target.
+# Failures are EXPECTED until each story (PLANET-1484..1491) is implemented.
+# The dashboard at https://exisz.github.io/tally tracks the red board.
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 22 * * *'  # daily 22:00 UTC (08:00 Sydney)
+  workflow_dispatch:
+
+# Only one e2e run at a time; cancel in-progress on new push.
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TALLY_CLOUD_BASE_URL: https://tally.rollersoft.com.au
+      E2E_SECRET: ${{ secrets.E2E_SECRET }}
+      TALLY_AGENT_TEST_TOKEN: ${{ secrets.TALLY_AGENT_TEST_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm --filter @tally/cloud exec playwright install --with-deps chromium
+
+      - name: Wait for Vercel deploy
+        run: |
+          echo "Probing $TALLY_CLOUD_BASE_URL …"
+          for i in $(seq 1 30); do
+            CODE=$(curl -s -o /dev/null -w "%{http_code}" "$TALLY_CLOUD_BASE_URL")
+            if [ "$CODE" = "200" ]; then
+              echo "✅ Site reachable (HTTP $CODE) after ${i}0s"
+              exit 0
+            fi
+            echo "  attempt $i/30 — got HTTP $CODE"
+            sleep 10
+          done
+          echo "⚠️ Timeout waiting for deploy, running tests anyway"
+
+      - name: Run cloud e2e tests
+        id: tests
+        continue-on-error: true
+        run: pnpm --filter @tally/cloud exec playwright test
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_NAME: apps/cloud/test-results/results.json
+
+      - name: Upload Playwright report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            apps/cloud/playwright-report/
+            apps/cloud/test-results/
+          retention-days: 30
+
+      - name: Embed failed screenshots in Job Summary
+        if: always()
+        run: |
+          RESULTS="apps/cloud/test-results/results.json"
+          if [ ! -f "$RESULTS" ]; then
+            echo "⚠️ No results.json found — Playwright did not produce structured output." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          STATS=$(jq -c '.stats // {}' "$RESULTS")
+          echo "## 🧪 Tally Cloud E2E — Stage 0 (TDD red foundation)" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Stats:** \`$STATS\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "📊 Dashboard: https://exisz.github.io/tally" >> "$GITHUB_STEP_SUMMARY"
+          echo "📈 Trends:    https://exisz.github.io/tally/trends.html" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          # Walk failed specs and inline a screenshot per failure.
+          jq -r '
+            [.. | objects | select(has("ok") and has("title") and (.ok == false))]
+            | .[] | .title
+          ' "$RESULTS" 2>/dev/null | while read -r title; do
+            [ -z "$title" ] && continue
+            echo "### ❌ $title" >> "$GITHUB_STEP_SUMMARY"
+            SLUG=$(echo "$title" | tr ' ' '-' | tr -cd 'A-Za-z0-9-' | head -c 50)
+            SCREENSHOT=$(find apps/cloud/test-results -name "*.png" -path "*${SLUG}*" 2>/dev/null | sort | tail -1)
+            if [ -z "$SCREENSHOT" ]; then
+              SCREENSHOT=$(find apps/cloud/test-results -name "*.png" 2>/dev/null | sort | tail -1)
+            fi
+            if [ -n "$SCREENSHOT" ] && [ -f "$SCREENSHOT" ]; then
+              B64=$(base64 -w0 "$SCREENSHOT" 2>/dev/null || base64 "$SCREENSHOT")
+              echo "![failure](data:image/png;base64,$B64)" >> "$GITHUB_STEP_SUMMARY"
+            fi
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+          done
+
+      - name: Prepare report for Pages
+        if: always()
+        run: |
+          mkdir -p public
+          REPORT_DIR="apps/cloud/playwright-report"
+          if [ -f "$REPORT_DIR/index.html" ]; then
+            echo "✅ Playwright report found"
+            cp -r "$REPORT_DIR"/* public/
+          else
+            echo "⚠️ No playwright report — emitting placeholder"
+            cat > public/index.html <<'PLACEHOLDER'
+          <!DOCTYPE html><html><head><title>Tally E2E</title></head>
+          <body style="font-family:system-ui;max-width:720px;margin:40px auto;padding:0 20px;background:#0b0f17;color:#e5e7eb">
+          <h1>🧪 Tally — Cloud E2E</h1>
+          <p>No Playwright report available for this run. See
+          <a style="color:#7c3aed" href="https://github.com/exisz/tally/actions">Actions</a>.</p>
+          </body></html>
+          PLACEHOLDER
+          fi
+
+          # Copy traces / videos / screenshots so the HTML report can hot-link them.
+          TEST_RESULTS="apps/cloud/test-results"
+          if [ -d "$TEST_RESULTS" ]; then
+            cp -r "$TEST_RESULTS" public/test-results
+          fi
+
+          # Inject a Trends button into the HTML report.
+          if [ -f public/index.html ]; then
+            sed -i 's|</body>|<div style="position:fixed;top:10px;right:10px;z-index:9999"><a href="trends.html" style="padding:8px 16px;background:#7c3aed;color:white;text-decoration:none;border-radius:4px;font-weight:bold">📈 Trends</a></div></body>|' public/index.html || true
+          fi
+
+          ls public/index.html
+
+      - name: Append to results.csv (trends data)
+        if: always()
+        run: |
+          RESULTS="apps/cloud/test-results/results.json"
+          TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          SHA="${{ github.sha }}"
+          if [ -f "$RESULTS" ]; then
+            DURATION=$(jq '.stats.duration // 0' "$RESULTS")
+            EXPECTED=$(jq '.stats.expected // 0' "$RESULTS")
+            UNEXPECTED=$(jq '.stats.unexpected // 0' "$RESULTS")
+            FLAKY=$(jq '.stats.flaky // 0' "$RESULTS")
+            SKIPPED=$(jq '.stats.skipped // 0' "$RESULTS")
+            PASSED=$EXPECTED
+            FAILED=$UNEXPECTED
+            TOTAL=$((PASSED + FAILED + FLAKY + SKIPPED))
+          else
+            DURATION=0; TOTAL=0; PASSED=0; FAILED=0
+          fi
+          # Pull existing CSV from gh-pages branch if present.
+          git fetch origin gh-pages --depth=1 2>/dev/null || true
+          git show origin/gh-pages:results.csv > public/results.csv 2>/dev/null \
+            || echo "timestamp,sha,duration,total,passed,failed" > public/results.csv
+          echo "$TIMESTAMP,$SHA,$DURATION,$TOTAL,$PASSED,$FAILED" >> public/results.csv
+
+      - name: Generate trends.html
+        if: always()
+        run: |
+          cat > public/trends.html <<'TRENDSEOF'
+          <!DOCTYPE html>
+          <html><head>
+          <title>Tally · E2E Trends</title>
+          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+          <style>
+            body { font-family: system-ui; max-width: 1200px; margin: 0 auto; padding: 20px; background:#0b0f17; color:#e5e7eb; }
+            canvas { max-height: 400px; background:#111827; border-radius:8px; padding:10px; }
+            .back { display:inline-block; margin-bottom:20px; color:#7c3aed; text-decoration:none; }
+            h1, h2 { color:#fff; }
+            .lede { opacity:0.7; }
+          </style>
+          </head><body>
+          <a class="back" href="index.html">← Back to Report</a>
+          <h1>📈 Tally Cloud E2E — Trends</h1>
+          <p class="lede">Stage 0 expectation: red. Each story (PLANET-1484…1491) flips one slice green.</p>
+          <h2>Pass Rate</h2><canvas id="passRate"></canvas>
+          <h2>Duration (s)</h2><canvas id="duration"></canvas>
+          <script>
+          fetch('results.csv').then(r=>r.text()).then(csv=>{
+            const rows = csv.trim().split('\n').slice(1).map(r=>{
+              const c = r.split(',');
+              return { ts:c[0], sha:c[1], duration:+c[2], total:+c[3], passed:+c[4], failed:+c[5] };
+            });
+            const last30 = rows.slice(-30);
+            const labels = last30.map(r=>r.ts.slice(5,16));
+            const passRates = last30.map(r=>r.total ? Math.round(r.passed/r.total*100) : 0);
+            const durations = last30.map(r=>Math.round(r.duration/1000));
+            new Chart(document.getElementById('passRate'), {
+              type:'line', data:{ labels, datasets:[{label:'Pass %',data:passRates,borderColor:'#36d399',backgroundColor:'rgba(54,211,153,0.1)',tension:0.3,fill:true}] },
+              options:{ scales:{ y:{ min:0, max:100, grid:{color:'#1f2937'} }, x:{ grid:{color:'#1f2937'} } } }
+            });
+            new Chart(document.getElementById('duration'), {
+              type:'line', data:{ labels, datasets:[{label:'Duration (s)',data:durations,borderColor:'#7c3aed',backgroundColor:'rgba(124,58,237,0.1)',tension:0.3,fill:true}] },
+              options:{ scales:{ y:{ min:0, grid:{color:'#1f2937'} }, x:{ grid:{color:'#1f2937'} } } }
+            });
+          }).catch(e=>{ document.body.insertAdjacentHTML('beforeend','<p style="color:#f87272">No data yet — first run pending.</p>'); });
+          </script>
+          </body></html>
+          TRENDSEOF
+
+      - name: Deploy to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          force_orphan: true
+
+      - name: Notify Discord on failure
+        if: always()
+        env:
+          WEBHOOK_URL: https://linux.queue-musical.ts.net/webhook/hook/tally-e2e
+        run: |
+          # Note: the actual GitHub `workflow_run` event will be POSTed by the repo webhook
+          # to the same router, which renders a coloured embed automatically. This step is a
+          # belt-and-braces direct ping in case the upstream webhook is throttled.
+          RESULTS="apps/cloud/test-results/results.json"
+          DASHBOARD="https://exisz.github.io/tally"
+          STATS="(no results.json)"
+          if [ -f "$RESULTS" ]; then
+            STATS=$(jq -c '.stats // {}' "$RESULTS")
+          fi
+          curl -s -o /dev/null -w "router POST: %{http_code}\n" -X POST "$WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -H "X-GitHub-Event: workflow_run" \
+            -d '{
+              "action":"completed",
+              "workflow_run":{
+                "name":"E2E (Playwright Cloud)",
+                "conclusion":"${{ steps.tests.outcome }}",
+                "status":"completed",
+                "head_branch":"${{ github.ref_name }}",
+                "head_sha":"${{ github.sha }}",
+                "html_url":"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              },
+              "repository":{"full_name":"${{ github.repository }}"},
+              "sender":{"login":"${{ github.actor }}"}
+            }'

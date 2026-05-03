@@ -1,0 +1,5 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body { background: hsl(var(--b1)); color-scheme: dark; }
