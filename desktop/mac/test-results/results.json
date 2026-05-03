@@ -1,0 +1,5 @@
+{
+  "stats": { "expected": 0, "unexpected": 1, "flaky": 0, "skipped": 0, "duration": 100 },
+  "suites": [],
+  "errors": [{"message":"PLANET-1492 not yet implemented — placeholder"}]
+}
