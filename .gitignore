@@ -1,0 +1,15 @@
+node_modules
+.next
+.vercel
+.env
+.env.local
+.env.production
+.env.*.local
+dist
+build
+*.log
+.DS_Store
+playwright-report
+test-results
+.turbo
+.cache

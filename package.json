@@ -1,0 +1,11 @@
+{
+  "name": "@tally/desktop",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "test:unit": "vitest run tests/unit",
+    "test:integration": "vitest run tests/integration",
+    "test:e2e": "playwright test",
+    "test": "pnpm test:unit && pnpm test:integration && pnpm test:e2e"
+  }
+}
