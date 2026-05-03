@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html><head>
+<title>Tally · E2E Trends</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  body { font-family: system-ui; max-width: 1200px; margin: 0 auto; padding: 20px; background:#0b0f17; color:#e5e7eb; }
+  canvas { max-height: 400px; background:#111827; border-radius:8px; padding:10px; }
+  .back { display:inline-block; margin-bottom:20px; color:#7c3aed; text-decoration:none; }
+  h1, h2 { color:#fff; }
+  .lede { opacity:0.7; }
+</style>
+</head><body>
+<a class="back" href="index.html">← Back to Report</a>
+<h1>📈 Tally Cloud E2E — Trends</h1>
+<p class="lede">Stage 0 expectation: red. Each story (PLANET-1484…1491) flips one slice green.</p>
+<h2>Pass Rate</h2><canvas id="passRate"></canvas>
+<h2>Duration (s)</h2><canvas id="duration"></canvas>
+<script>
+fetch('results.csv').then(r=>r.text()).then(csv=>{
+  const rows = csv.trim().split('\n').slice(1).map(r=>{
+    const c = r.split(',');
+    return { ts:c[0], sha:c[1], duration:+c[2], total:+c[3], passed:+c[4], failed:+c[5] };
+  });
+  const last30 = rows.slice(-30);
+  const labels = last30.map(r=>r.ts.slice(5,16));
+  const passRates = last30.map(r=>r.total ? Math.round(r.passed/r.total*100) : 0);
+  const durations = last30.map(r=>Math.round(r.duration/1000));
+  new Chart(document.getElementById('passRate'), {
+    type:'line', data:{ labels, datasets:[{label:'Pass %',data:passRates,borderColor:'#36d399',backgroundColor:'rgba(54,211,153,0.1)',tension:0.3,fill:true}] },
+    options:{ scales:{ y:{ min:0, max:100, grid:{color:'#1f2937'} }, x:{ grid:{color:'#1f2937'} } } }
+  });
+  new Chart(document.getElementById('duration'), {
+    type:'line', data:{ labels, datasets:[{label:'Duration (s)',data:durations,borderColor:'#7c3aed',backgroundColor:'rgba(124,58,237,0.1)',tension:0.3,fill:true}] },
+    options:{ scales:{ y:{ min:0, grid:{color:'#1f2937'} }, x:{ grid:{color:'#1f2937'} } } }
+  });
+}).catch(e=>{ document.body.insertAdjacentHTML('beforeend','<p style="color:#f87272">No data yet — first run pending.</p>'); });
+</script>
+</body></html>
