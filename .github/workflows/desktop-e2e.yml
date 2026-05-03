@@ -1,0 +1,164 @@
+name: Desktop E2E (Playwright Electron)
+
+# PLANET-1524 — Desktop surface of the Tally dashboard.
+# Placeholder until PLANET-1492 ships real Playwright-Electron tests
+# against the packaged Tally app.
+#
+# Matrix:
+#  - self-hosted-mac → mac-mini runner (PLANET-1523)
+#  - ubuntu-latest   → GHA hosted
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 23 * * *'  # daily 23:00 UTC (09:00 Sydney) — staggered vs cloud
+  workflow_dispatch:
+
+concurrency:
+  group: desktop-e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  desktop:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: self-hosted-mac
+            label: mac
+            runs_on: [self-hosted, macOS, arm64, mac-mini]
+          - os: ubuntu-latest
+            label: linux
+            runs_on: ubuntu-latest
+    runs-on: ${{ matrix.runs_on }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show OS + node
+        run: |
+          uname -a || true
+          echo "node: $(node -v 2>/dev/null || echo missing)"
+          echo "matrix.label=${{ matrix.label }}"
+
+      - name: Run desktop placeholder spec
+        id: tests
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -eux
+          mkdir -p apps/desktop-stub/test-results apps/desktop-stub/playwright-report
+          # Real Electron tests land in PLANET-1492. For now we emit a single
+          # placeholder result so the dashboard has shape.
+          cat > apps/desktop-stub/test-results/results.json <<JSON
+          {
+            "stats": { "expected": 0, "unexpected": 1, "flaky": 0, "skipped": 0, "duration": 100 },
+            "suites": [],
+            "errors": [{"message":"PLANET-1492 not yet implemented — placeholder"}]
+          }
+          JSON
+          cat > apps/desktop-stub/playwright-report/index.html <<HTML
+          <!DOCTYPE html><html><head><title>Tally Desktop E2E (${{ matrix.label }})</title></head>
+          <body style="font-family:system-ui;max-width:720px;margin:40px auto;padding:0 20px;background:#0b0f17;color:#e5e7eb">
+          <h1>🖥️ Tally Desktop E2E — ${{ matrix.label }}</h1>
+          <p><strong>Placeholder.</strong> Real Playwright-Electron tests land in
+          <a style="color:#a78bfa" href="https://exisz.atlassian.net/browse/PLANET-1492">PLANET-1492</a>.</p>
+          <p>This run only exercises the surface plumbing: runner pickup, gh-pages publish,
+          status.json badge.</p>
+          </body></html>
+          HTML
+          # Force a non-zero outcome so the placeholder reads as RED.
+          exit 1
+
+      - name: Upload report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-desktop-${{ matrix.label }}
+          path: |
+            apps/desktop-stub/playwright-report/
+            apps/desktop-stub/test-results/
+          retention-days: 14
+
+      - name: Stage desktop/${{ matrix.label }} for gh-pages
+        if: always()
+        env:
+          SURFACE: desktop-${{ matrix.label }}
+          LABEL: ${{ matrix.label }}
+        run: |
+          set -euo pipefail
+          mkdir -p public/desktop/${LABEL}
+          cp -r apps/desktop-stub/playwright-report/* public/desktop/${LABEL}/
+          [ -d apps/desktop-stub/test-results ] && cp -r apps/desktop-stub/test-results public/desktop/${LABEL}/test-results || true
+
+          RESULTS="apps/desktop-stub/test-results/results.json"
+          if [ -f "$RESULTS" ]; then
+            jq -c --arg surface "$SURFACE" '{
+              surface: $surface,
+              passed: (.stats.expected // 0),
+              failed: (.stats.unexpected // 0),
+              flaky:  (.stats.flaky // 0),
+              skipped:(.stats.skipped // 0),
+              duration: (.stats.duration // 0),
+              ts: now | todate,
+              sha: env.GITHUB_SHA
+            }' "$RESULTS" > public/desktop/${LABEL}/status.json
+          else
+            echo "{\"surface\":\"$SURFACE\",\"passed\":0,\"failed\":0,\"duration\":0,\"ts\":\"\"}" > public/desktop/${LABEL}/status.json
+          fi
+
+          git fetch origin gh-pages --depth=1 2>/dev/null || true
+          git show origin/gh-pages:desktop/${LABEL}/results.csv > public/desktop/${LABEL}/results.csv 2>/dev/null \
+            || echo "timestamp,sha,duration,total,passed,failed" > public/desktop/${LABEL}/results.csv
+          if [ -f "$RESULTS" ]; then
+            DURATION=$(jq '.stats.duration // 0' "$RESULTS")
+            EXPECTED=$(jq '.stats.expected // 0' "$RESULTS")
+            UNEXPECTED=$(jq '.stats.unexpected // 0' "$RESULTS")
+            FLAKY=$(jq '.stats.flaky // 0' "$RESULTS")
+            SKIPPED=$(jq '.stats.skipped // 0' "$RESULTS")
+            TOTAL=$((EXPECTED + UNEXPECTED + FLAKY + SKIPPED))
+            echo "$(date -u +%Y-%m-%dT%H:%M:%SZ),${{ github.sha }},$DURATION,$TOTAL,$EXPECTED,$UNEXPECTED" >> public/desktop/${LABEL}/results.csv
+          fi
+
+      - name: Build dashboard root (Desktop / Cloud / Releases)
+        if: always()
+        env:
+          GH_REPO: ${{ github.repository }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bash scripts/build-dashboard-root.sh public
+
+      - name: Deploy desktop/${{ matrix.label }} + root to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          keep_files: true
+
+      - name: Notify Discord on failure
+        if: always()
+        env:
+          WEBHOOK_URL: https://linux.queue-musical.ts.net/webhook/hook/tally-e2e
+        run: |
+          curl -s -o /dev/null -w "router POST: %{http_code}\n" -X POST "$WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -H "X-GitHub-Event: workflow_run" \
+            -d "{
+              \"action\":\"completed\",
+              \"workflow_run\":{
+                \"name\":\"Desktop E2E (${{ matrix.label }})\",
+                \"conclusion\":\"${{ steps.tests.outcome }}\",
+                \"status\":\"completed\",
+                \"head_branch\":\"${{ github.ref_name }}\",
+                \"head_sha\":\"${{ github.sha }}\",
+                \"html_url\":\"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
+              },
+              \"repository\":{\"full_name\":\"${{ github.repository }}\"},
+              \"sender\":{\"login\":\"${{ github.actor }}\"}
+            }"
