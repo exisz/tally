@@ -12,6 +12,7 @@ spec_revised: 2026-05-02  # Tally name + single-domain + AW parity mandate
 discord: "channel:1500117146951356519"
 repo: exisz/tally       # to be created
 local_clone: /Users/c/dev/tally
+e2e_dashboard: https://exisz.github.io/tally/
 ---
 
 # Tally — Agent-era ActivityWatch

@@ -33,13 +33,13 @@ describe('PLANET-1525 e2e-dashboard DNA wiring', () => {
   });
 
   it('dna://convention/e2e-dashboard-mandatory renders', () => {
-    const out = execFileSync('dna', ['convention', 'e2e-dashboard-mandatory'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+    const out = execFileSync('dna', ['show', 'dna://convention/e2e-dashboard-mandatory'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
     expect(out).toMatch(/e2e/i);
     expect(out).toMatch(/dashboard/i);
   });
 
   it('dna://flow/setup-e2e-dashboard renders', () => {
-    const out = execFileSync('dna', ['flow', 'setup-e2e-dashboard'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+    const out = execFileSync('dna', ['show', 'dna://flow/setup-e2e-dashboard'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
     expect(out.toLowerCase()).toMatch(/setup|step|dashboard/);
   });
 
