@@ -12,8 +12,9 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: cloud-e2e-${{ github.ref }}
-  cancel-in-progress: true
+  # Same group as desktop-e2e — only one writer to gh-pages at a time.
+  group: tally-ghpages-${{ github.ref }}
+  cancel-in-progress: false
 
 permissions:
   contents: write
