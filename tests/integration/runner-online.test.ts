@@ -18,8 +18,8 @@ describe('PLANET-1523 self-hosted runner', () => {
     const runners: Array<{ name: string; status: string; labels: Array<{ name: string }> }> = JSON.parse(raw || '[]');
     const ok = runners.find((r) => {
       if (r.status !== 'online') return false;
-      const names = (r.labels || []).map((l) => l.name);
-      return REQUIRED_LABELS.every((req) => names.includes(req));
+      const names = (r.labels || []).map((l) => l.name.toLowerCase());
+      return REQUIRED_LABELS.every((req) => names.includes(req.toLowerCase()));
     });
     expect(ok, `no online runner with all labels ${REQUIRED_LABELS.join(',')}; got=${JSON.stringify(runners)}`).toBeTruthy();
   });
