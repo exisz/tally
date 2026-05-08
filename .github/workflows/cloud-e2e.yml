@@ -23,7 +23,7 @@ permissions:
 
 jobs:
   e2e:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64, tally-cloud]
     timeout-minutes: 20
     env:
       TALLY_CLOUD_BASE_URL: https://tally.rollersoft.com.au
