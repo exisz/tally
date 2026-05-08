@@ -14,7 +14,7 @@
       "ci": {
         "commitHref": "https://github.com/exisz/tally/commit/8f60250f53da9fca918980e3982fc2e4c2c59168",
         "commitHash": "8f60250f53da9fca918980e3982fc2e4c2c59168",
-        "buildHref": "https://github.com/exisz/tally/actions/runs/25529917307"
+        "buildHref": "https://github.com/exisz/tally/actions/runs/25582585927"
       },
       "gitCommit": {
         "shortHash": "8f60250",
@@ -45,7 +45,7 @@
           "ci": {
             "commitHref": "https://github.com/exisz/tally/commit/8f60250f53da9fca918980e3982fc2e4c2c59168",
             "commitHash": "8f60250f53da9fca918980e3982fc2e4c2c59168",
-            "buildHref": "https://github.com/exisz/tally/actions/runs/25529917307"
+            "buildHref": "https://github.com/exisz/tally/actions/runs/25582585927"
           },
           "gitCommit": {
             "shortHash": "8f60250",
@@ -138,7 +138,7 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "failed",
-                      "duration": 2069,
+                      "duration": 1797,
                       "error": {
                         "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected value: \u001b[32m501\u001b[39m\nReceived array: \u001b[31m[200, 404]\u001b[39m",
                         "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected value: \u001b[32m501\u001b[39m\nReceived array: \u001b[31m[200, 404]\u001b[39m\n    at /tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-revocation.spec.ts:33:24",
@@ -162,7 +162,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-05-08T00:39:34.158Z",
+                      "startTime": "2026-05-08T22:27:51.315Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -186,7 +186,7 @@
                       "workerIndex": 3,
                       "parallelIndex": 0,
                       "status": "failed",
-                      "duration": 980,
+                      "duration": 791,
                       "error": {
                         "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected value: \u001b[32m501\u001b[39m\nReceived array: \u001b[31m[200, 404]\u001b[39m",
                         "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected value: \u001b[32m501\u001b[39m\nReceived array: \u001b[31m[200, 404]\u001b[39m\n    at /tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-revocation.spec.ts:33:24",
@@ -210,7 +210,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 1,
-                      "startTime": "2026-05-08T00:39:36.693Z",
+                      "startTime": "2026-05-08T22:27:53.575Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -287,7 +287,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-05-08T00:39:33.732Z",
+                      "startTime": "2026-05-08T22:27:50.891Z",
                       "annotations": [
                         {
                           "type": "skip",
@@ -341,7 +341,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-05-08T00:39:33.733Z",
+                      "startTime": "2026-05-08T22:27:50.891Z",
                       "annotations": [
                         {
                           "type": "skip",
@@ -397,7 +397,7 @@
                       "workerIndex": 1,
                       "parallelIndex": 1,
                       "status": "failed",
-                      "duration": 877,
+                      "duration": 709,
                       "error": {
                         "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m501\u001b[39m",
                         "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m501\u001b[39m\n    at /tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-token-issue.spec.ts:19:25",
@@ -421,7 +421,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-05-08T00:39:34.164Z",
+                      "startTime": "2026-05-08T22:27:51.319Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -445,7 +445,7 @@
                       "workerIndex": 2,
                       "parallelIndex": 1,
                       "status": "failed",
-                      "duration": 268,
+                      "duration": 533,
                       "error": {
                         "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m501\u001b[39m",
                         "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m501\u001b[39m\n    at /tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-token-issue.spec.ts:19:25",
@@ -469,7 +469,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 1,
-                      "startTime": "2026-05-08T00:39:35.518Z",
+                      "startTime": "2026-05-08T22:27:52.494Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -505,8 +505,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-05-08T00:39:33.661Z",
-    "duration": 4059.29,
+    "startTime": "2026-05-08T22:27:50.865Z",
+    "duration": 3547.7479999999996,
     "expected": 0,
     "skipped": 2,
     "unexpected": 2,
