@@ -1,7 +1,7 @@
 {
   "config": {
-    "configFile": "/home/runner/work/tally/tally/apps/cloud/playwright.config.ts",
-    "rootDir": "/home/runner/work/tally/tally/apps/cloud/tests/e2e",
+    "configFile": "/tmp/runner/tally-cloud/tally/tally/apps/cloud/playwright.config.ts",
+    "rootDir": "/tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e",
     "forbidOnly": true,
     "fullyParallel": true,
     "globalSetup": null,
@@ -12,24 +12,24 @@
     "maxFailures": 0,
     "metadata": {
       "ci": {
-        "commitHref": "https://github.com/exisz/tally/commit/667e33e51d178ac7c8c85b714eb5babbe9b8895b",
-        "commitHash": "667e33e51d178ac7c8c85b714eb5babbe9b8895b",
-        "buildHref": "https://github.com/exisz/tally/actions/runs/25525599515"
+        "commitHref": "https://github.com/exisz/tally/commit/8f60250f53da9fca918980e3982fc2e4c2c59168",
+        "commitHash": "8f60250f53da9fca918980e3982fc2e4c2c59168",
+        "buildHref": "https://github.com/exisz/tally/actions/runs/25529917307"
       },
       "gitCommit": {
-        "shortHash": "667e33e",
-        "hash": "667e33e51d178ac7c8c85b714eb5babbe9b8895b",
-        "subject": "feat(dna): e2e-dashboard wiring — register tally node + spec frontmatter; tests green (PLANET-1525)",
-        "body": "feat(dna): e2e-dashboard wiring — register tally node + spec frontmatter; tests green (PLANET-1525)\n",
+        "shortHash": "8f60250",
+        "hash": "8f60250f53da9fca918980e3982fc2e4c2c59168",
+        "subject": "ci: switch cloud-e2e runner to self-hosted linux",
+        "body": "ci: switch cloud-e2e runner to self-hosted linux\n",
         "author": {
           "name": "exis[ai]",
           "email": "gotexis@gmail.com",
-          "time": 1777778759000
+          "time": 1778200660000
         },
         "committer": {
           "name": "exis[ai]",
           "email": "gotexis@gmail.com",
-          "time": 1777778759000
+          "time": 1778200660000
         },
         "branch": "main"
       },
@@ -38,29 +38,29 @@
     "preserveOutput": "always",
     "projects": [
       {
-        "outputDir": "/home/runner/work/tally/tally/apps/cloud/test-results",
+        "outputDir": "/tmp/runner/tally-cloud/tally/tally/apps/cloud/test-results",
         "repeatEach": 1,
         "retries": 1,
         "metadata": {
           "ci": {
-            "commitHref": "https://github.com/exisz/tally/commit/667e33e51d178ac7c8c85b714eb5babbe9b8895b",
-            "commitHash": "667e33e51d178ac7c8c85b714eb5babbe9b8895b",
-            "buildHref": "https://github.com/exisz/tally/actions/runs/25525599515"
+            "commitHref": "https://github.com/exisz/tally/commit/8f60250f53da9fca918980e3982fc2e4c2c59168",
+            "commitHash": "8f60250f53da9fca918980e3982fc2e4c2c59168",
+            "buildHref": "https://github.com/exisz/tally/actions/runs/25529917307"
           },
           "gitCommit": {
-            "shortHash": "667e33e",
-            "hash": "667e33e51d178ac7c8c85b714eb5babbe9b8895b",
-            "subject": "feat(dna): e2e-dashboard wiring — register tally node + spec frontmatter; tests green (PLANET-1525)",
-            "body": "feat(dna): e2e-dashboard wiring — register tally node + spec frontmatter; tests green (PLANET-1525)\n",
+            "shortHash": "8f60250",
+            "hash": "8f60250f53da9fca918980e3982fc2e4c2c59168",
+            "subject": "ci: switch cloud-e2e runner to self-hosted linux",
+            "body": "ci: switch cloud-e2e runner to self-hosted linux\n",
             "author": {
               "name": "exis[ai]",
               "email": "gotexis@gmail.com",
-              "time": 1777778759000
+              "time": 1778200660000
             },
             "committer": {
               "name": "exis[ai]",
               "email": "gotexis@gmail.com",
-              "time": 1777778759000
+              "time": 1778200660000
             },
             "branch": "main"
           },
@@ -68,7 +68,7 @@
         },
         "id": "",
         "name": "",
-        "testDir": "/home/runner/work/tally/tally/apps/cloud/tests/e2e",
+        "testDir": "/tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -138,12 +138,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "failed",
-                      "duration": 1405,
+                      "duration": 2069,
                       "error": {
                         "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected value: \u001b[32m501\u001b[39m\nReceived array: \u001b[31m[200, 404]\u001b[39m",
-                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected value: \u001b[32m501\u001b[39m\nReceived array: \u001b[31m[200, 404]\u001b[39m\n    at /home/runner/work/tally/tally/apps/cloud/tests/e2e/agent-revocation.spec.ts:33:24",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected value: \u001b[32m501\u001b[39m\nReceived array: \u001b[31m[200, 404]\u001b[39m\n    at /tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-revocation.spec.ts:33:24",
                         "location": {
-                          "file": "/home/runner/work/tally/tally/apps/cloud/tests/e2e/agent-revocation.spec.ts",
+                          "file": "/tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-revocation.spec.ts",
                           "column": 24,
                           "line": 33
                         },
@@ -152,32 +152,32 @@
                       "errors": [
                         {
                           "location": {
-                            "file": "/home/runner/work/tally/tally/apps/cloud/tests/e2e/agent-revocation.spec.ts",
+                            "file": "/tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-revocation.spec.ts",
                             "column": 24,
                             "line": 33
                           },
-                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected value: \u001b[32m501\u001b[39m\nReceived array: \u001b[31m[200, 404]\u001b[39m\n\n  31 |       headers: { Authorization: `Bearer ${token}` },\n  32 |     });\n> 33 |     expect([200, 404]).toContain(probe.status); // 404 ok if no events seeded\n     |                        ^\n  34 |\n  35 |     // Revoke\n  36 |     const del = await fetch(`${BASE_URL}/api/agent-tokens/${id}`, {\n    at /home/runner/work/tally/tally/apps/cloud/tests/e2e/agent-revocation.spec.ts:33:24"
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected value: \u001b[32m501\u001b[39m\nReceived array: \u001b[31m[200, 404]\u001b[39m\n\n  31 |       headers: { Authorization: `Bearer ${token}` },\n  32 |     });\n> 33 |     expect([200, 404]).toContain(probe.status); // 404 ok if no events seeded\n     |                        ^\n  34 |\n  35 |     // Revoke\n  36 |     const del = await fetch(`${BASE_URL}/api/agent-tokens/${id}`, {\n    at /tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-revocation.spec.ts:33:24"
                         }
                       ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-05-07T22:30:50.734Z",
+                      "startTime": "2026-05-08T00:39:34.158Z",
                       "annotations": [],
                       "attachments": [
                         {
                           "name": "error-context",
                           "contentType": "text/markdown",
-                          "path": "/home/runner/work/tally/tally/apps/cloud/test-results/agent-revocation-PLANET-14-b2e51--s-audit-log-captures-event/error-context.md"
+                          "path": "/tmp/runner/tally-cloud/tally/tally/apps/cloud/test-results/agent-revocation-PLANET-14-b2e51--s-audit-log-captures-event/error-context.md"
                         },
                         {
                           "name": "trace",
                           "contentType": "application/zip",
-                          "path": "/home/runner/work/tally/tally/apps/cloud/test-results/agent-revocation-PLANET-14-b2e51--s-audit-log-captures-event/trace.zip"
+                          "path": "/tmp/runner/tally-cloud/tally/tally/apps/cloud/test-results/agent-revocation-PLANET-14-b2e51--s-audit-log-captures-event/trace.zip"
                         }
                       ],
                       "errorLocation": {
-                        "file": "/home/runner/work/tally/tally/apps/cloud/tests/e2e/agent-revocation.spec.ts",
+                        "file": "/tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-revocation.spec.ts",
                         "column": 24,
                         "line": 33
                       }
@@ -186,12 +186,12 @@
                       "workerIndex": 3,
                       "parallelIndex": 0,
                       "status": "failed",
-                      "duration": 507,
+                      "duration": 980,
                       "error": {
                         "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected value: \u001b[32m501\u001b[39m\nReceived array: \u001b[31m[200, 404]\u001b[39m",
-                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected value: \u001b[32m501\u001b[39m\nReceived array: \u001b[31m[200, 404]\u001b[39m\n    at /home/runner/work/tally/tally/apps/cloud/tests/e2e/agent-revocation.spec.ts:33:24",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected value: \u001b[32m501\u001b[39m\nReceived array: \u001b[31m[200, 404]\u001b[39m\n    at /tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-revocation.spec.ts:33:24",
                         "location": {
-                          "file": "/home/runner/work/tally/tally/apps/cloud/tests/e2e/agent-revocation.spec.ts",
+                          "file": "/tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-revocation.spec.ts",
                           "column": 24,
                           "line": 33
                         },
@@ -200,32 +200,32 @@
                       "errors": [
                         {
                           "location": {
-                            "file": "/home/runner/work/tally/tally/apps/cloud/tests/e2e/agent-revocation.spec.ts",
+                            "file": "/tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-revocation.spec.ts",
                             "column": 24,
                             "line": 33
                           },
-                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected value: \u001b[32m501\u001b[39m\nReceived array: \u001b[31m[200, 404]\u001b[39m\n\n  31 |       headers: { Authorization: `Bearer ${token}` },\n  32 |     });\n> 33 |     expect([200, 404]).toContain(probe.status); // 404 ok if no events seeded\n     |                        ^\n  34 |\n  35 |     // Revoke\n  36 |     const del = await fetch(`${BASE_URL}/api/agent-tokens/${id}`, {\n    at /home/runner/work/tally/tally/apps/cloud/tests/e2e/agent-revocation.spec.ts:33:24"
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected value: \u001b[32m501\u001b[39m\nReceived array: \u001b[31m[200, 404]\u001b[39m\n\n  31 |       headers: { Authorization: `Bearer ${token}` },\n  32 |     });\n> 33 |     expect([200, 404]).toContain(probe.status); // 404 ok if no events seeded\n     |                        ^\n  34 |\n  35 |     // Revoke\n  36 |     const del = await fetch(`${BASE_URL}/api/agent-tokens/${id}`, {\n    at /tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-revocation.spec.ts:33:24"
                         }
                       ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 1,
-                      "startTime": "2026-05-07T22:30:52.625Z",
+                      "startTime": "2026-05-08T00:39:36.693Z",
                       "annotations": [],
                       "attachments": [
                         {
                           "name": "error-context",
                           "contentType": "text/markdown",
-                          "path": "/home/runner/work/tally/tally/apps/cloud/test-results/agent-revocation-PLANET-14-b2e51--s-audit-log-captures-event-retry1/error-context.md"
+                          "path": "/tmp/runner/tally-cloud/tally/tally/apps/cloud/test-results/agent-revocation-PLANET-14-b2e51--s-audit-log-captures-event-retry1/error-context.md"
                         },
                         {
                           "name": "trace",
                           "contentType": "application/zip",
-                          "path": "/home/runner/work/tally/tally/apps/cloud/test-results/agent-revocation-PLANET-14-b2e51--s-audit-log-captures-event-retry1/trace.zip"
+                          "path": "/tmp/runner/tally-cloud/tally/tally/apps/cloud/test-results/agent-revocation-PLANET-14-b2e51--s-audit-log-captures-event-retry1/trace.zip"
                         }
                       ],
                       "errorLocation": {
-                        "file": "/home/runner/work/tally/tally/apps/cloud/tests/e2e/agent-revocation.spec.ts",
+                        "file": "/tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-revocation.spec.ts",
                         "column": 24,
                         "line": 33
                       }
@@ -268,7 +268,7 @@
                       "type": "skip",
                       "description": "TALLY_AGENT_TEST_TOKEN not set",
                       "location": {
-                        "file": "/home/runner/work/tally/tally/apps/cloud/tests/e2e/agent-summary.spec.ts",
+                        "file": "/tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-summary.spec.ts",
                         "line": 15,
                         "column": 8
                       }
@@ -287,13 +287,13 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-05-07T22:30:50.262Z",
+                      "startTime": "2026-05-08T00:39:33.732Z",
                       "annotations": [
                         {
                           "type": "skip",
                           "description": "TALLY_AGENT_TEST_TOKEN not set",
                           "location": {
-                            "file": "/home/runner/work/tally/tally/apps/cloud/tests/e2e/agent-summary.spec.ts",
+                            "file": "/tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-summary.spec.ts",
                             "line": 15,
                             "column": 8
                           }
@@ -322,7 +322,7 @@
                       "type": "skip",
                       "description": "TALLY_AGENT_TEST_TOKEN not set",
                       "location": {
-                        "file": "/home/runner/work/tally/tally/apps/cloud/tests/e2e/agent-summary.spec.ts",
+                        "file": "/tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-summary.spec.ts",
                         "line": 15,
                         "column": 8
                       }
@@ -341,13 +341,13 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-05-07T22:30:50.263Z",
+                      "startTime": "2026-05-08T00:39:33.733Z",
                       "annotations": [
                         {
                           "type": "skip",
                           "description": "TALLY_AGENT_TEST_TOKEN not set",
                           "location": {
-                            "file": "/home/runner/work/tally/tally/apps/cloud/tests/e2e/agent-summary.spec.ts",
+                            "file": "/tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-summary.spec.ts",
                             "line": 15,
                             "column": 8
                           }
@@ -397,12 +397,12 @@
                       "workerIndex": 1,
                       "parallelIndex": 1,
                       "status": "failed",
-                      "duration": 379,
+                      "duration": 877,
                       "error": {
                         "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m501\u001b[39m",
-                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m501\u001b[39m\n    at /home/runner/work/tally/tally/apps/cloud/tests/e2e/agent-token-issue.spec.ts:19:25",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m501\u001b[39m\n    at /tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-token-issue.spec.ts:19:25",
                         "location": {
-                          "file": "/home/runner/work/tally/tally/apps/cloud/tests/e2e/agent-token-issue.spec.ts",
+                          "file": "/tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-token-issue.spec.ts",
                           "column": 25,
                           "line": 19
                         },
@@ -411,32 +411,32 @@
                       "errors": [
                         {
                           "location": {
-                            "file": "/home/runner/work/tally/tally/apps/cloud/tests/e2e/agent-token-issue.spec.ts",
+                            "file": "/tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-token-issue.spec.ts",
                             "column": 25,
                             "line": 19
                           },
-                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m501\u001b[39m\n\n  17 |       body: JSON.stringify({ email: `e2e-1490-${ts}@aw.test` }),\n  18 |     });\n> 19 |     expect(mint.status).toBe(200);\n     |                         ^\n  20 |     const { accessToken, sub: userId } = (await mint.json()) as any;\n  21 |\n  22 |     const create = await fetch(`${BASE_URL}/api/agent-tokens`, {\n    at /home/runner/work/tally/tally/apps/cloud/tests/e2e/agent-token-issue.spec.ts:19:25"
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m501\u001b[39m\n\n  17 |       body: JSON.stringify({ email: `e2e-1490-${ts}@aw.test` }),\n  18 |     });\n> 19 |     expect(mint.status).toBe(200);\n     |                         ^\n  20 |     const { accessToken, sub: userId } = (await mint.json()) as any;\n  21 |\n  22 |     const create = await fetch(`${BASE_URL}/api/agent-tokens`, {\n    at /tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-token-issue.spec.ts:19:25"
                         }
                       ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-05-07T22:30:50.732Z",
+                      "startTime": "2026-05-08T00:39:34.164Z",
                       "annotations": [],
                       "attachments": [
                         {
                           "name": "error-context",
                           "contentType": "text/markdown",
-                          "path": "/home/runner/work/tally/tally/apps/cloud/test-results/agent-token-issue-PLANET-1-53972-wn-once-and-bound-to-userId/error-context.md"
+                          "path": "/tmp/runner/tally-cloud/tally/tally/apps/cloud/test-results/agent-token-issue-PLANET-1-53972-wn-once-and-bound-to-userId/error-context.md"
                         },
                         {
                           "name": "trace",
                           "contentType": "application/zip",
-                          "path": "/home/runner/work/tally/tally/apps/cloud/test-results/agent-token-issue-PLANET-1-53972-wn-once-and-bound-to-userId/trace.zip"
+                          "path": "/tmp/runner/tally-cloud/tally/tally/apps/cloud/test-results/agent-token-issue-PLANET-1-53972-wn-once-and-bound-to-userId/trace.zip"
                         }
                       ],
                       "errorLocation": {
-                        "file": "/home/runner/work/tally/tally/apps/cloud/tests/e2e/agent-token-issue.spec.ts",
+                        "file": "/tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-token-issue.spec.ts",
                         "column": 25,
                         "line": 19
                       }
@@ -445,12 +445,12 @@
                       "workerIndex": 2,
                       "parallelIndex": 1,
                       "status": "failed",
-                      "duration": 248,
+                      "duration": 268,
                       "error": {
                         "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m501\u001b[39m",
-                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m501\u001b[39m\n    at /home/runner/work/tally/tally/apps/cloud/tests/e2e/agent-token-issue.spec.ts:19:25",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m501\u001b[39m\n    at /tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-token-issue.spec.ts:19:25",
                         "location": {
-                          "file": "/home/runner/work/tally/tally/apps/cloud/tests/e2e/agent-token-issue.spec.ts",
+                          "file": "/tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-token-issue.spec.ts",
                           "column": 25,
                           "line": 19
                         },
@@ -459,32 +459,32 @@
                       "errors": [
                         {
                           "location": {
-                            "file": "/home/runner/work/tally/tally/apps/cloud/tests/e2e/agent-token-issue.spec.ts",
+                            "file": "/tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-token-issue.spec.ts",
                             "column": 25,
                             "line": 19
                           },
-                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m501\u001b[39m\n\n  17 |       body: JSON.stringify({ email: `e2e-1490-${ts}@aw.test` }),\n  18 |     });\n> 19 |     expect(mint.status).toBe(200);\n     |                         ^\n  20 |     const { accessToken, sub: userId } = (await mint.json()) as any;\n  21 |\n  22 |     const create = await fetch(`${BASE_URL}/api/agent-tokens`, {\n    at /home/runner/work/tally/tally/apps/cloud/tests/e2e/agent-token-issue.spec.ts:19:25"
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m501\u001b[39m\n\n  17 |       body: JSON.stringify({ email: `e2e-1490-${ts}@aw.test` }),\n  18 |     });\n> 19 |     expect(mint.status).toBe(200);\n     |                         ^\n  20 |     const { accessToken, sub: userId } = (await mint.json()) as any;\n  21 |\n  22 |     const create = await fetch(`${BASE_URL}/api/agent-tokens`, {\n    at /tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-token-issue.spec.ts:19:25"
                         }
                       ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 1,
-                      "startTime": "2026-05-07T22:30:51.586Z",
+                      "startTime": "2026-05-08T00:39:35.518Z",
                       "annotations": [],
                       "attachments": [
                         {
                           "name": "error-context",
                           "contentType": "text/markdown",
-                          "path": "/home/runner/work/tally/tally/apps/cloud/test-results/agent-token-issue-PLANET-1-53972-wn-once-and-bound-to-userId-retry1/error-context.md"
+                          "path": "/tmp/runner/tally-cloud/tally/tally/apps/cloud/test-results/agent-token-issue-PLANET-1-53972-wn-once-and-bound-to-userId-retry1/error-context.md"
                         },
                         {
                           "name": "trace",
                           "contentType": "application/zip",
-                          "path": "/home/runner/work/tally/tally/apps/cloud/test-results/agent-token-issue-PLANET-1-53972-wn-once-and-bound-to-userId-retry1/trace.zip"
+                          "path": "/tmp/runner/tally-cloud/tally/tally/apps/cloud/test-results/agent-token-issue-PLANET-1-53972-wn-once-and-bound-to-userId-retry1/trace.zip"
                         }
                       ],
                       "errorLocation": {
-                        "file": "/home/runner/work/tally/tally/apps/cloud/tests/e2e/agent-token-issue.spec.ts",
+                        "file": "/tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-token-issue.spec.ts",
                         "column": 25,
                         "line": 19
                       }
@@ -505,8 +505,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-05-07T22:30:50.185Z",
-    "duration": 2994.125,
+    "startTime": "2026-05-08T00:39:33.661Z",
+    "duration": 4059.29,
     "expected": 0,
     "skipped": 2,
     "unexpected": 2,
