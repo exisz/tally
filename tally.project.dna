@@ -2,297 +2,85 @@
 id: dna://project/tally
 type: project
 managed_by: dna://agent/planetbuild
-title: Tally — Agent-era ActivityWatch
+title: Tally — archived standalone ActivityWatch plan; merged into LifeForge/LifeOS
 derives_from: https://github.com/ActivityWatch/activitywatch
 ticket: PLANET-1470
-spec_version: 1.2
+spec_version: 2.0
 spec_authored: 2026-05-02
-spec_revised: 2026-05-02  # Tally name + single-domain + AW parity mandate
+spec_revised: 2026-05-10  # Emperor pivot: no standalone Tally; merge into LifeForge/LifeOS
+status: archived
+merged_into: dna://project/lifeforge
 
 discord: "channel:1500117146951356519"
-repo: exisz/tally       # to be created
+repo: exisz/tally
 local_clone: /Users/c/dev/tally
 e2e_dashboard: https://exisz.github.io/tally/
 ---
 
-# Tally — Agent-era ActivityWatch
+# Tally — archived standalone plan; ActivityWatch becomes a LifeForge/LifeOS module
 
-> **2026-05-02 — Emperor's directive.** ActivityWatch is great but (a) lacks a real GUI, (b) lacks cloud sync, (c) cannot be talked to by OpenClaw / PeopleClaw / any agent. This project rebuilds the AW experience for the agent era while preserving its excellent local backend.
->
-> Configured via TDD-first methodology: **stories → tests → code**, never the other way around.
+> **2026-05-10 — Emperor directive.** Standalone Tally is cancelled. The value is not a prettier Electron UI; the value is cross-device life activity capture, especially mobile. Tally becomes a LifeForge/LifeOS activity module/plugin. The existing Electron/AW work is sealed as a local capture adapter only.
 
----
+## 0. Canonical decision
 
-## 0. Vision
+Independent Tally is no longer a product. Do **not** continue building:
 
-> Keep ActivityWatch's privacy-first local-first soul. Replace its 2014-era browser-based UI with a polished Electron desktop app. Add an opt-in, end-to-end-encrypted cloud sync so agents (OpenClaw, PeopleClaw, future) can answer questions like "what did Exis spend his day on?" without depending on a screen capture or a manual log.
+- standalone Electron app as the primary UX
+- `tally.rollersoft.com.au` as a separate app/dashboard/API product
+- independent Tally mobile app
+- independent `@tally/agent` product surface
+- separate product roadmap, landing, or user acquisition path
 
-### What we are NOT
+All future work belongs in **LifeForge/LifeOS** (`dna://project/lifeforge`):
 
-| Not | Why |
-|-----|-----|
-| ❌ A reimplementation of `aw-server` | aw-server-rust already works, is tiny (~10 MB), and its REST API is stable. We embed it. |
-| ❌ A SaaS-only tracker (Rize / RescueTime) | Privacy-first stays. Cloud sync is opt-in and E2EE. |
-| ❌ A productivity-shaming dashboard | We surface raw events + agent-grade summaries. No "you wasted 3h on Reddit" UI. |
-| ❌ Yet another pretty time chart | The deliverable for users IS a polished GUI; the deliverable for *agents* is the API. The chart is a side-effect. |
+- LifeOS mobile/PWA is the user-facing surface.
+- ActivityWatch desktop capture is an input source.
+- Local AW data can sync upward into LifeForge cloud.
+- LifeForge owns summaries, timelines, RPG/meaning layer, notifications, and agent exports.
 
-### What we ARE
+## 1. What remains from Tally
 
-> A native desktop app that supervises the AW backend, presents a beautiful local UI, and exposes the user's activity stream to the user's own AI agents — locally first, cloud-synced when permitted.
+The useful Tally residue is an **AW bridge**, not a product:
 
----
-
-## 1. Architecture (Canonical, Source of Truth)
-
-```
-┌──────────────────────── Electron App (tally) ────────────────────────┐
-│                                                                         │
-│  ┌─ Renderer (React/Vite) ─────┐    ┌─ Main Process ───────────────┐  │
-│  │  • Dashboard                │◄──►│  • Backend Supervisor (BE)   │  │
-│  │  • Timeline                 │    │  • Tray + autostart          │  │
-│  │  • Sync settings            │    │  • IPC bridge                │  │
-│  │  • Agent token manager      │    │  • Cloud sync worker         │  │
-│  └─────────────────────────────┘    └────────┬─────────────────────┘  │
-│                                              │ spawns / supervises    │
-│                                              ▼                         │
-│                                  ┌─ Bundled subprocesses ─┐            │
-│                                  │  aw-server-rust        │            │
-│                                  │  aw-watcher-window     │            │
-│                                  │  aw-watcher-afk        │            │
-│                                  └────────────────────────┘            │
-└─────────────────────────────────────────────────────────────────────────┘
-                                              │ HTTPS
-                                              ▼
-                ┌─────────────────────────────────────────────────────┐
-                │  https://tally.rollersoft.com.au  (single domain)   │
-                │  Next.js on Vercel + Turso (Drizzle) + Logto auth   │
-                │                                                     │
-                │   /                  → marketing landing            │
-                │   /download          → installer downloads          │
-                │   /app/*             → web dashboard (logged-in)    │
-                │   /api/v1/sync/*     → desktop ⇄ cloud sync         │
-                │   /api/v1/agent/*    → agent API (M2M)              │
-                │   /api/internal/*    → e2e + cron, gated by secret  │
-                └─────────────────────────────────────────────────────┘
-                                              │
-                                              ▼
-                              ┌──────────────────────────────┐
-                              │  OpenClaw / PeopleClaw / etc │
-                              │  (consumes via Agent API)    │
-                              └──────────────────────────────┘
-```
-
-### 1.1 Component manifest
-
-| # | Component | Tech | Lifecycle owner |
-|---|-----------|------|-----------------|
-| C1 | Electron Main | TypeScript, electron-builder | App |
-| C2 | Renderer UI | React + Vite + DaisyUI | App |
-| C3 | Backend Supervisor | Node child_process | Main process |
-| C4 | Bundled `aw-server-rust` | upstream binary, vendored per-platform | Supervisor |
-| C5 | Bundled watchers (`window`, `afk`) | upstream binaries | Supervisor |
-| C6 | Local API wrapper | TypeScript SDK over `aw-server` REST | Renderer + Main |
-| C7 | Cloud Sync Worker | Node, runs in Main, batches buckets | Main process |
-| C8 | Cloud + Web (single Next.js app) | Next.js on Vercel + Turso (Drizzle) + Logto | Standalone monorepo sibling |
-| C9 | Agent SDK | `@tally/agent` npm package | Standalone |
-
-### 1.2 Repos / deploy targets
-
-| Asset | Repo | Deploy |
-|-------|------|--------|
-| Electron app | `exisz/tally` (root: `apps/desktop`) | electron-builder → GitHub Releases |
-| Cloud + Web (landing + dashboard + API) | same monorepo, root: `apps/cloud` (Next.js App Router) | **Single** Vercel project `tally`, **single** custom domain `tally.rollersoft.com.au` |
-| Agent SDK | same monorepo, `packages/agent-sdk` | npm |
-
-> **One project, one domain, one deploy.** The Next.js app at `apps/cloud` serves the landing page (`/`), the logged-in web dashboard (`/app`), the sync API (`/api/v1/sync`), and the agent API (`/api/v1/agent`). No separate landing project. No `aw.rollersoft.com.au` / `tally-landing` split.
-
-### 1.3 Hard constraints
-
-- ✅ **AW feature parity (non-negotiable)**: Tally MUST cover every user-facing feature of upstream ActivityWatch — see §1.4 Parity Matrix. New stories cannot replace AW features; they extend them.
-- ✅ **Embedded backend**: never ask user to install ActivityWatch separately. Bundled `aw-server-rust` exposes its full REST API on loopback so 3rd-party AW watchers (vim, vscode, JetBrains, browser ext, obsidian, etc.) plug in unmodified.
-- ✅ **Local-first**: app must be 100% functional with cloud sync OFF
-- ✅ **E2EE for cloud**: events encrypted client-side with a key derived from a user-held passphrase; cloud sees only opaque blobs (except aggregate metadata needed for indexing — see §3)
-- ✅ **Agent API**: agents authenticate via Logto M2M tokens scoped to a single user
-- ✅ **TDD-first**: every story has a test under `tests/e2e/journeys/` or `tests/unit/` written **before** any production code
-- ✅ **Cross-platform**: macOS (arm64 + x64), Windows (x64), Linux (x64) — match upstream AW
-
----
-
-## 1.4 AW Parity Matrix (Source of Truth)
-
-> Every upstream ActivityWatch user-facing feature has a Tally story. Closing a parity row = a Story marked Done with its named test green. Removing or skipping a row requires Emperor sign-off and a written justification in this section.
-
-| AW feature (upstream) | Tally story | Test file |
+| Asset | Future role | Status |
 |---|---|---|
-| Tray icon | S1.2 (PLANET-1472) | `tests/e2e/journeys/02-tray-icon.spec.ts` |
-| Autostart | S1.3 (PLANET-1473) | `tests/e2e/journeys/03-autostart.spec.ts` |
-| Pausing logging | S2.5 (PLANET-1480) | `tests/e2e/journeys/07-pause-tracking.spec.ts` |
-| Window watcher (`aw-watcher-window`) | S2.3 (PLANET-1478) | `tests/integration/watchers-bootstrap.test.ts` |
-| AFK watcher (`aw-watcher-afk`) | S2.3 (PLANET-1478) | `tests/integration/watchers-bootstrap.test.ts` |
-| Browser watcher (`aw-watcher-web`) compatibility | S2.7 (PLANET-1505) | `tests/integration/browser-watcher-bucket.test.ts` |
-| Editor watchers (vscode/vim/jetbrains) compatibility | S2.8 (PLANET-1506) | `tests/integration/editor-watcher-bucket.test.ts` |
-| 3rd-party watcher REST extensibility | S2.6 (PLANET-1504) | `tests/integration/external-watcher.test.ts` |
-| Web/desktop dashboard | S3.2 (PLANET-1482) | `tests/e2e/journeys/05-event-collection.spec.ts` |
-| Bucket explorer | S3.3 (PLANET-1483) | `tests/e2e/journeys/10-bucket-explorer.spec.ts` |
-| Categorization rules engine | S3.4 (PLANET-1496) | `tests/integration/categorization-engine.test.ts` |
-| Category editor UI | S3.5 (PLANET-1497) | `tests/e2e/journeys/20-category-editor.spec.ts` |
-| Activity view (per-category, per-day) | S3.6 (PLANET-1498) | `tests/e2e/journeys/21-activity-view.spec.ts` |
-| Stopwatch (manual timer) | S3.7 (PLANET-1499) | `tests/e2e/journeys/22-stopwatch.spec.ts` |
-| Query view (AQL editor) | S3.8 (PLANET-1500) | `tests/e2e/journeys/23-query-view.spec.ts` |
-| Filtering / search | S3.9 (PLANET-1501) | `tests/e2e/journeys/24-filter-search.spec.ts` |
-| Exporting data (JSON) | S3.10 (PLANET-1502) | `tests/integration/export-json.test.ts` |
-| Importing data (from existing AW) | S3.11 (PLANET-1503) | `tests/integration/import-aw.test.ts` |
-| AFK timeout configurable | S1.6 (PLANET-1507) | `tests/e2e/journeys/25-settings-advanced.spec.ts` |
-| Per-watcher enable/disable | S1.6 (PLANET-1507) | `tests/e2e/journeys/25-settings-advanced.spec.ts` |
-| Multi-host bucket view | S1.6 (PLANET-1507) | `tests/e2e/journeys/25-settings-advanced.spec.ts` |
-| Clean shutdown | S1.5 (PLANET-1475) | `tests/e2e/journeys/06-clean-shutdown.spec.ts` |
-| Clean uninstall | S6.4 (PLANET-1495) | `tests/e2e/journeys/13-clean-uninstall.spec.ts` |
+| ActivityWatch local backend knowledge | Source adapter for desktop activity | Preserve |
+| Electron supervisor/scaffolding | Optional sealed local helper for aw-server/watchers | Freeze; no UX investment |
+| Cloud sync design | Re-home under LifeForge API/data model | Superseded |
+| Agent API/SDK idea | Re-home as LifeForge agent export | Superseded |
+| Tally dashboard/landing/download | Remove from roadmap | Cancelled |
 
-### Tally-only additions (beyond AW)
-
-| Feature | Story | Test |
-|---|---|---|
-| Native Electron shell | S1.1 (PLANET-1471) | `01-fresh-launch.spec.ts` |
-| OS dark mode + manual override | S1.4 (PLANET-1474) | `04-dark-mode.spec.ts` |
-| E2EE cloud sync | S4.1–S4.5 (PLANET-1484–1488) | `tests/e2e/journeys/11-cloud-sync-enable.spec.ts`, etc. |
-| Agent API + SDK + revocation | S5.1–S5.3 (PLANET-1489–1491) | `apps/cloud/tests/e2e/agent-*.spec.ts` |
-| Local SDK with Zod schemas | S3.1 (PLANET-1481) | `tests/unit/local-sdk.test.ts` |
-
----
-
-## 2. Canonical User Scenarios (Source of Truth)
-
-> These are **non-negotiable**. Any feature request that contradicts them must trigger an escalation, not silent reinterpretation.
-
-| ID | Scenario | Acceptance |
-|----|----------|------------|
-| **S1** | Fresh install on a clean Mac → user double-clicks `.dmg` → drags to Applications → launches → tray icon appears → `aw-server` is running on a private port → window shows "0 events tracked (just started)" | E2E test `01-fresh-install.spec.ts` |
-| **S2** | After 60 s of typing in VSCode and Chrome, the dashboard shows two distinct buckets with non-zero event counts; the timeline shows ≥1 colored block per app | `02-event-collection.spec.ts` |
-| **S3** | User clicks "Enable cloud sync" → enters a passphrase → app generates an encryption key → uploads existing events in the background → cloud `GET /api/v1/sync/buckets` returns the user's bucket list (opaque ids only) | `03-cloud-sync-enable.spec.ts` |
-| **S4** | An OpenClaw agent, holding an M2M token, calls `GET /api/v1/agent/summary?since=24h` and receives a structured JSON answer ("3 h 12 m on VSCode, 1 h 47 m on Chrome, 22 m AFK") — derived **client-side at decryption time** by a user-installed gateway, not from cloud plaintext | `05-agent-summary.spec.ts` |
-| **S5** | User quits the Electron app → all spawned child processes (`aw-server`, watchers) terminate within 3 s; no orphans visible in `ps` | `06-clean-shutdown.spec.ts` |
-| **S6** | User toggles "Pause tracking" in tray menu → no new events flow into any bucket until resumed | `07-pause-tracking.spec.ts` |
-| **S7** | User revokes an agent token in cloud settings → next call by that agent returns 401 within 60 s | `08-agent-revocation.spec.ts` |
-| **S8** | User uninstalls the app → all local data, child processes, autostart entries removed | `09-clean-uninstall.spec.ts` |
-
-### 2.1 Anti-scenarios (will be rejected)
-
-| Anti-pattern | Why rejected |
-|--------------|--------------|
-| ❌ Cloud receives plaintext window titles | Violates E2EE. |
-| ❌ App requires an account to start tracking | Violates local-first. |
-| ❌ App ships with productivity-shaming UI ("You're below your goal") | Out of scope; that's a separate agent's job. |
-| ❌ Reimplementing `aw-server` in Node | Wastes effort; upstream Rust binary is excellent. |
-| ❌ Auto-uploading without explicit opt-in | Privacy violation. |
-
----
-
-## 3. Cloud Sync — E2EE design
-
-| Layer | Visibility to cloud |
-|-------|---------------------|
-| Bucket id (UUID) | ✅ visible |
-| Bucket type (e.g. `currentwindow`) | ✅ visible (needed for routing) |
-| Event timestamp + duration | ✅ visible (needed for incremental sync) |
-| Event `data` payload (app name, title, URL) | 🔒 **encrypted blob** (XChaCha20-Poly1305) |
-| Per-user encryption key | ❌ never sent — derived from user passphrase via Argon2id |
-| Per-device key share (multi-device unlock) | 🔒 wrapped with master, sent encrypted |
-
-Cloud cannot read titles. Agent gateways decrypt locally on the user's behalf and serve summaries to OpenClaw etc.
-
----
-
-## 4. TDD framework (Source of Truth for "how we build")
-
-### 4.1 Layers
-
-| Layer | Tool | Test root | Run cmd |
-|-------|------|-----------|---------|
-| Unit (pure logic) | **Vitest** | `tests/unit/` | `pnpm test:unit` |
-| Integration (supervisor + bundled binaries) | **Vitest + child_process** | `tests/integration/` | `pnpm test:integration` |
-| Electron E2E | **Playwright (electron driver)** | `tests/e2e/journeys/` | `pnpm test:e2e` |
-| Cloud API E2E | **Playwright (HTTP)** | `apps/cloud/tests/e2e/` | `pnpm --filter cloud e2e` |
-
-### 4.2 Story → Test rule (non-negotiable)
+## 2. New architecture boundary
 
 ```
-For every Story ticket (PLANET-XXXX):
+Desktop ActivityWatch / local AW bridge
+  └─ opt-in sync adapter → LifeForge cloud
 
-  1. Acceptance criteria written in the ticket (Gherkin-ish)
-  2. A failing test file exists at the path named in the ticket
-  3. Test file is committed to main BEFORE any production code
-  4. Engineer pod is gated on: "does the named test exist and currently fail?"
-  5. Engineer marks Done only when test goes green AND test was not modified during implementation
+Phone / mobile LifeOS app
+  └─ native/PWA capture + daily interaction surface
+
+LifeForge / LifeOS
+  ├─ activity timeline module
+  ├─ daily summary + CROWN integration
+  ├─ RPG meaning layer (skills, habits, quests, rewards)
+  └─ agent export endpoint for OpenClaw / PeopleClaw / future agents
 ```
 
-### 4.3 Layout (mirrors peopleclaw)
+## 3. Hard rules after pivot
 
-```
-apps/desktop/
-  tests/
-    e2e/
-      fixtures/         # mock watchers, fake clock, tmp data dir
-      helpers/          # spawn helpers, IPC helpers, waitFor
-      journeys/         # 1 file per Canonical Scenario (S1..S8)
-      pages/            # POMs (page object models) for renderer windows
-    unit/
-    integration/
-  playwright.config.ts  # uses electron driver, headless, video on
-apps/cloud/
-  tests/
-    e2e/                # mirrors peopleclaw apps/admin/tests/e2e
-```
+1. **LifeForge owns the product.** Tally must not grow separate user-facing surfaces.
+2. **Mobile-first value.** If a story does not improve phone/LifeOS usage or LifeForge intelligence, reject or defer.
+3. **Desktop AW is an input, not the app.** Electron is allowed only as a sealed local bridge/supervisor if needed.
+4. **No duplicate cloud.** Any sync/API/schema work lands in LifeForge, not Tally cloud.
+5. **Privacy remains local-first/opt-in.** AW data upload must be explicit, revocable, and scoped.
 
-### 4.4 Reference implementation
+## 4. Migration tasks
 
-The pattern is **identical** to PeopleClaw `apps/admin/tests/e2e/journeys/`. See:
+- Create LifeForge/LifeOS Activity module spec and roadmap.
+- Move relevant Tally test ideas into LifeForge tests where still valid.
+- Archive or disable independent Tally deploy/workflows once LifeForge module tickets exist.
+- Preserve `/Users/c/dev/tally` only as historical/adapter reference until explicitly deleted.
 
-- `peopleclaw/apps/admin/tests/e2e/journeys/08-scheduled-task.spec.ts` — for API-driven, fixture-minted-token style
-- `peopleclaw/apps/admin/playwright.config.ts` — for `baseURL` env-overridable config
+## 5. Deprecated historical plan
 
-Differences for tally:
-
-- Use `_electron` from `playwright` to launch the packaged app
-- Use a **temporary `XDG_DATA_HOME` / `APPDATA`** per test for isolation
-- Stub `aw-watcher-window` with a fake binary that emits scripted events on a deterministic clock
-
----
-
-## 5. Stage gating
-
-| Stage | Goal | Gate |
-|-------|------|------|
-| **0 (now)** | Spec + epics + stories + failing tests committed | Emperor sign-off on this spec + tests review |
-| **1** | Electron shell launches, tray icon, supervises bundled `aw-server` | S1, S5, S6 green |
-| **2** | Local UI shows real events from real watchers | S2 green |
-| **3** | Cloud sync opt-in, E2EE upload | S3 green |
-| **4** | Agent API + SDK + revocation | S4, S7 green |
-| **5** | Polish: uninstaller, autoupdate, signed builds | S8 green |
-
-Implementation does NOT begin on a stage until ALL tests for that stage exist and fail meaningfully (i.e., not just `expect(true).toBe(false)`).
-
----
-
-## 6. OPEN QUESTIONS (Emperor decision required before Stage 1)
-
-1. ~~Cloud DB~~ → **Turso** (default per peopleclaw stack).
-2. ~~Auth~~ → **Logto M2M** (empire standard).
-3. **Distribution**: GitHub Releases first; Mac App Store / Microsoft Store later? Or skip stores entirely?
-4. ~~Domain~~ → **`tally.rollersoft.com.au` (single domain, single Vercel project)** — confirmed 2026-05-02.
-5. ~~Repo name~~ → **`exisz/tally`** — confirmed 2026-05-02.
-6. **Watcher set v1**: window + afk only, or include browser extension from upstream? (Suggest: v1 = window + afk; browser as Stage 4.)
-
----
-
-## 7. Roadmap → Jira
-
-| Stage | Epic | Stories |
-|-------|------|---------|
-| 0 | PLANET-1470 (this Epic) | scaffolding stories below |
-| 1 | E1 + E2 (sub-epics under 1470) | one story per Stage-1 test |
-| 2 | E3 | one story per Stage-2 test |
-| 3 | E4 + E8 (cloud) | one story per Stage-3 test |
-| 4 | E5 + E9 (SDK) | one story per Stage-4 test |
-| 5 | E6 polish | one story per Stage-5 test |
-
-See live Jira tickets for the canonical, mutating list. This file freezes the **shape** of the roadmap, not the contents.
+The previous v1.2 spec targeted an Electron desktop app plus separate cloud/web/API under `tally.rollersoft.com.au`. That direction is intentionally superseded by this file.
