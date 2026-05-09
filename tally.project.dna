@@ -2,14 +2,17 @@
 id: dna://project/tally
 type: project
 managed_by: dna://agent/planetbuild
-title: Tally — archived standalone ActivityWatch plan; merged into LifeForge/LifeOS
+title: Tally — LifeOS desktop ActivityWatch data source / export bridge
 derives_from: https://github.com/ActivityWatch/activitywatch
 ticket: PLANET-1470
-spec_version: 2.0
+spec_version: 2.1
 spec_authored: 2026-05-02
-spec_revised: 2026-05-10  # Emperor pivot: no standalone Tally; merge into LifeForge/LifeOS
-status: archived
-merged_into: dna://project/lifeforge
+spec_revised: 2026-05-10  # Emperor pivot: Tally remains as LifeOS desktop data source/export bridge
+status: active_bridge_only
+paired_product: dna://project/lifeforge
+active_tickets:
+  - PLANET-1636
+  - PLANET-1637
 
 discord: "channel:1500117146951356519"
 repo: exisz/tally
@@ -17,70 +20,83 @@ local_clone: /Users/c/dev/tally
 e2e_dashboard: https://exisz.github.io/tally/
 ---
 
-# Tally — archived standalone plan; ActivityWatch becomes a LifeForge/LifeOS module
+# Tally — LifeOS desktop ActivityWatch data source / export bridge
 
-> **2026-05-10 — Emperor directive.** Standalone Tally is cancelled. The value is not a prettier Electron UI; the value is cross-device life activity capture, especially mobile. Tally becomes a LifeForge/LifeOS activity module/plugin. The existing Electron/AW work is sealed as a local capture adapter only.
+> **2026-05-10 — Emperor directive, refined.** Tally still exists, but not as an independent desktop dashboard product. Its job is to be the desktop ActivityWatch-compatible data source/export bridge for LifeForge/LifeOS. The user-facing LifeOS plugin owns enable/connect/display.
 
 ## 0. Canonical decision
 
-Independent Tally is no longer a product. Do **not** continue building:
+Tally remains active only as a **desktop data source**:
 
-- standalone Electron app as the primary UX
-- `tally.rollersoft.com.au` as a separate app/dashboard/API product
-- independent Tally mobile app
-- independent `@tally/agent` product surface
-- separate product roadmap, landing, or user acquisition path
+- User installs/runs Tally instead of vanilla ActivityWatch.
+- Tally bundles or supervises ActivityWatch-compatible local capture.
+- Tally exposes/ships a data export bridge that syncs AW-compatible buckets/events to LifeForge cloud.
+- LifeOS plugin UI shows the Tally data source, handles pairing/enabling, and displays imported activity.
 
-All future work belongs in **LifeForge/LifeOS** (`dna://project/lifeforge`):
+Do **not** continue building Tally as:
 
-- LifeOS mobile/PWA is the user-facing surface.
-- ActivityWatch desktop capture is an input source.
-- Local AW data can sync upward into LifeForge cloud.
-- LifeForge owns summaries, timelines, RPG/meaning layer, notifications, and agent exports.
+- a polished standalone Electron dashboard
+- a separate cloud app at `tally.rollersoft.com.au`
+- a separate mobile app
+- a separate agent API product
+- a separate landing/download product
 
-## 1. What remains from Tally
+## 1. Required end-to-end flow
 
-The useful Tally residue is an **AW bridge**, not a product:
+1. User opens LifeOS plugin screen.
+2. LifeOS shows **Tally** as an available data source.
+3. User enables/opens Tally plugin.
+4. LifeOS creates a pairing/exchange token for local Tally.
+5. Local Tally stores/exchanges that token and receives a scoped device token.
+6. Tally reads local ActivityWatch-compatible buckets/events.
+7. Tally incrementally uploads activity data to LifeForge ingestion API.
+8. LifeOS displays recent Tally activity and can use it for daily CROWN / agent summaries.
 
-| Asset | Future role | Status |
-|---|---|---|
-| ActivityWatch local backend knowledge | Source adapter for desktop activity | Preserve |
-| Electron supervisor/scaffolding | Optional sealed local helper for aw-server/watchers | Freeze; no UX investment |
-| Cloud sync design | Re-home under LifeForge API/data model | Superseded |
-| Agent API/SDK idea | Re-home as LifeForge agent export | Superseded |
-| Tally dashboard/landing/download | Remove from roadmap | Cancelled |
-
-## 2. New architecture boundary
+## 2. Architecture boundary
 
 ```
-Desktop ActivityWatch / local AW bridge
-  └─ opt-in sync adapter → LifeForge cloud
-
-Phone / mobile LifeOS app
-  └─ native/PWA capture + daily interaction surface
+Tally desktop bridge
+  ├─ local AW-compatible capture: aw-server/watchers or compatible adapter
+  ├─ bridge config: LifeOS base URL + pairing/device token
+  ├─ incremental cursor/dedupe
+  └─ POST activity payloads → LifeForge/LifeOS API
 
 LifeForge / LifeOS
-  ├─ activity timeline module
-  ├─ daily summary + CROWN integration
-  ├─ RPG meaning layer (skills, habits, quests, rewards)
-  └─ agent export endpoint for OpenClaw / PeopleClaw / future agents
+  ├─ plugin registry entry: Tally
+  ├─ pairing/token exchange endpoints
+  ├─ activity source/device/bucket/event storage
+  ├─ Activity plugin display
+  └─ CROWN + agent export consumers
 ```
 
-## 3. Hard rules after pivot
+## 3. Contract draft
 
-1. **LifeForge owns the product.** Tally must not grow separate user-facing surfaces.
-2. **Mobile-first value.** If a story does not improve phone/LifeOS usage or LifeForge intelligence, reject or defer.
-3. **Desktop AW is an input, not the app.** Electron is allowed only as a sealed local bridge/supervisor if needed.
-4. **No duplicate cloud.** Any sync/API/schema work lands in LifeForge, not Tally cloud.
-5. **Privacy remains local-first/opt-in.** AW data upload must be explicit, revocable, and scoped.
+Final endpoint names may evolve during PLANET-1636 / PLANET-1637, but the intended contract is:
 
-## 4. Migration tasks
+- `POST /api/activity/tally/pair/exchange`
+  - input: pairing token + local device metadata
+  - output: scoped device token + source device id
+- `POST /api/activity/tally/ingest`
+  - auth: `Authorization: Bearer <device-token>`
+  - input: source device id, buckets, events, cursor/checkpoint
+  - output: accepted counts + next cursor/checkpoint
 
-- Create LifeForge/LifeOS Activity module spec and roadmap.
-- Move relevant Tally test ideas into LifeForge tests where still valid.
-- Archive or disable independent Tally deploy/workflows once LifeForge module tickets exist.
-- Preserve `/Users/c/dev/tally` only as historical/adapter reference until explicitly deleted.
+Payload should preserve AW semantics: bucket id/type/client/hostname, event timestamp/duration/data, and enough source metadata to distinguish desktop devices.
 
-## 5. Deprecated historical plan
+## 4. What is archived
 
-The previous v1.2 spec targeted an Electron desktop app plus separate cloud/web/API under `tally.rollersoft.com.au`. That direction is intentionally superseded by this file.
+- Standalone desktop dashboard polish.
+- Standalone Tally cloud/web app and landing/download flow.
+- Long-running broad Electron UI E2E cycles as the main product gate.
+
+## 5. What is active now
+
+- **PLANET-1636** — Tally bridge: desktop ActivityWatch data export to LifeOS.
+- **PLANET-1637** — LifeOS plugin: Tally data source pairing and activity display.
+
+## 6. Privacy rules
+
+- Sync is opt-in.
+- Device token is revocable/scoped.
+- Upload behavior must be visible from LifeOS plugin settings.
+- Do not auto-upload existing local AW history without explicit enable/pair action.
