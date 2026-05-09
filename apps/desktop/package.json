@@ -1,0 +1,70 @@
+{
+  "name": "@tally/desktop",
+  "version": "0.1.0-rc.0",
+  "private": true,
+  "description": "Tally — agent-era ActivityWatch (Electron desktop shell).",
+  "main": "dist/main.js",
+  "scripts": {
+    "clean": "rimraf dist release",
+    "build:main": "tsc -p tsconfig.json",
+    "build:renderer": "node scripts/copy-renderer.mjs",
+    "build": "pnpm clean && pnpm build:main && pnpm build:renderer",
+    "start": "electron .",
+    "dev": "pnpm build && electron .",
+    "package": "pnpm build && electron-builder --publish never",
+    "package:mac": "pnpm build && electron-builder --mac --publish never",
+    "package:win": "pnpm build && electron-builder --win --publish never",
+    "package:linux": "pnpm build && electron-builder --linux --publish never"
+  },
+  "build": {
+    "appId": "au.com.rollersoft.tally",
+    "productName": "Tally",
+    "copyright": "Copyright © 2026 Rollersoft Pty Ltd",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**/*",
+      "renderer/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": [
+        { "target": "dmg", "arch": ["arm64", "x64"] }
+      ],
+      "identity": null,
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false,
+      "artifactName": "Tally-${version}-mac-${arch}.${ext}"
+    },
+    "win": {
+      "target": [
+        { "target": "nsis", "arch": ["x64"] }
+      ],
+      "artifactName": "Tally-${version}-win-${arch}-Setup.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "linux": {
+      "target": [
+        { "target": "AppImage", "arch": ["x64"] },
+        { "target": "deb", "arch": ["x64"] }
+      ],
+      "category": "Utility",
+      "artifactName": "Tally-${version}-linux-${arch}.${ext}"
+    }
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.6.3"
+  }
+}

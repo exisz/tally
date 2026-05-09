@@ -1,16 +1,31 @@
-node_modules
-.next
-.vercel
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+
+# Node
+node_modules/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Build outputs
+dist/
+.next/
+out/
+release/
+public/
+
+# Test outputs
+playwright-report/
+test-results/
+coverage/
+
+# Env / secrets
 .env
 .env.local
-.env.production
 .env.*.local
-dist
-build
-*.log
-.DS_Store
-playwright-report
-test-results
-.turbo
-.cache
-.env*.local
+.vercel
+
+# Electron-builder caches
+.cache/
