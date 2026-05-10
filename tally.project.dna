@@ -100,3 +100,14 @@ Payload should preserve AW semantics: bucket id/type/client/hostname, event time
 - Device token is revocable/scoped.
 - Upload behavior must be visible from LifeOS plugin settings.
 - Do not auto-upload existing local AW history without explicit enable/pair action.
+## 7. PLANET-1636 adapter contract
+
+The remaining in-repo implementation is `src/bridge/lifeos-exporter.ts`:
+
+- `LocalAwRestAdapter` reads AW-compatible `/api/0/buckets` and `/events`.
+- `LifeOsExporter.pair()` exchanges a one-time LifeOS pairing token for a device token.
+- `LifeOsExporter.exportOnce()` sends explicit, incremental, deduped AW events to LifeOS.
+- Payload source is fixed to `tally-aw-bridge`; LifeForge owns the receiving schema and UX.
+
+This is a handoff adapter, not a renewed Tally product surface. GitHub Actions/Playwright workflows were intentionally removed after archival and must not be recreated here.
+

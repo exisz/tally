@@ -1,25 +1,34 @@
 # Tally
 
-> Agent-era ActivityWatch — privacy-first local time tracker with opt-in E2EE cloud sync and an agent API.
+> Archived standalone ActivityWatch product plan. The surviving code is a small **ActivityWatch → LifeForge/LifeOS bridge**.
 
-**Status:** Stage 0 scaffolding (TDD red foundation). Tests under `tests/` and `apps/cloud/tests/` are the source of truth; production code follows.
+**Status:** archived as an independent product (2026-05-10). Per the project DNA, LifeForge/LifeOS now owns the user-facing activity timeline, cloud storage, mobile/PWA surface, summaries, and agent exports. This repo must not regrow a separate Tally cloud/dashboard/Electron product.
 
-## Layout
+## What remains here
 
 ```
-apps/
-  cloud/        Next.js 15 app at https://tally.rollersoft.com.au
-                landing + /app dashboard + /api/v1/sync + /api/v1/agent
-  desktop/      Electron app (Stage 1+)
-packages/
-  agent-sdk/    @tally/agent npm package
-tests/
-  unit/         Vitest unit tests (desktop)
-  integration/  Vitest + child_process integration tests
-  e2e/          Playwright (Electron driver) end-to-end tests
+src/bridge/          Dependency-light AW bridge/exporter code
+tests/bridge/        Vitest coverage for LifeOS pairing + ingest payloads
+apps/desktop/        Frozen historical Electron scaffold / local helper reference
+apps/cloud/          Historical superseded cloud scaffold; do not extend
 ```
 
-See `tally.project.dna` for the canonical architecture spec.
+The bridge reads local ActivityWatch-compatible buckets/events and uploads opt-in incremental payloads to a LifeOS endpoint:
+
+- pairing: `POST /api/activity/tally/pair/exchange`
+- ingest: `POST /api/activity/tally/ingest`
+- auth: `Authorization: Bearer <device token>` + `X-Tally-Device-Id`
+
+See `tally.project.dna` for the canonical pivot and hard boundaries.
+
+## Development
+
+```bash
+pnpm install
+pnpm exec vitest run tests/bridge
+```
+
+Do **not** recreate the removed GitHub Actions/Playwright workflows for Tally. CI/deploy ownership moves with the LifeForge module.
 
 ## License
 
