@@ -12,24 +12,24 @@
     "maxFailures": 0,
     "metadata": {
       "ci": {
-        "commitHref": "https://github.com/exisz/tally/commit/8f60250f53da9fca918980e3982fc2e4c2c59168",
-        "commitHash": "8f60250f53da9fca918980e3982fc2e4c2c59168",
-        "buildHref": "https://github.com/exisz/tally/actions/runs/25582585927"
+        "commitHref": "https://github.com/exisz/tally/commit/38f389e49a491a0ae622b53ba5bbd1e60cade16c",
+        "commitHash": "38f389e49a491a0ae622b53ba5bbd1e60cade16c",
+        "buildHref": "https://github.com/exisz/tally/actions/runs/25793729316"
       },
       "gitCommit": {
-        "shortHash": "8f60250",
-        "hash": "8f60250f53da9fca918980e3982fc2e4c2c59168",
-        "subject": "ci: switch cloud-e2e runner to self-hosted linux",
-        "body": "ci: switch cloud-e2e runner to self-hosted linux\n",
+        "shortHash": "38f389e",
+        "hash": "38f389e49a491a0ae622b53ba5bbd1e60cade16c",
+        "subject": "ci: unblock cloud e2e report generation",
+        "body": "ci: unblock cloud e2e report generation\n",
         "author": {
           "name": "exis[ai]",
           "email": "gotexis@gmail.com",
-          "time": 1778200660000
+          "time": 1778668368000
         },
         "committer": {
           "name": "exis[ai]",
           "email": "gotexis@gmail.com",
-          "time": 1778200660000
+          "time": 1778668469000
         },
         "branch": "main"
       },
@@ -43,24 +43,24 @@
         "retries": 1,
         "metadata": {
           "ci": {
-            "commitHref": "https://github.com/exisz/tally/commit/8f60250f53da9fca918980e3982fc2e4c2c59168",
-            "commitHash": "8f60250f53da9fca918980e3982fc2e4c2c59168",
-            "buildHref": "https://github.com/exisz/tally/actions/runs/25582585927"
+            "commitHref": "https://github.com/exisz/tally/commit/38f389e49a491a0ae622b53ba5bbd1e60cade16c",
+            "commitHash": "38f389e49a491a0ae622b53ba5bbd1e60cade16c",
+            "buildHref": "https://github.com/exisz/tally/actions/runs/25793729316"
           },
           "gitCommit": {
-            "shortHash": "8f60250",
-            "hash": "8f60250f53da9fca918980e3982fc2e4c2c59168",
-            "subject": "ci: switch cloud-e2e runner to self-hosted linux",
-            "body": "ci: switch cloud-e2e runner to self-hosted linux\n",
+            "shortHash": "38f389e",
+            "hash": "38f389e49a491a0ae622b53ba5bbd1e60cade16c",
+            "subject": "ci: unblock cloud e2e report generation",
+            "body": "ci: unblock cloud e2e report generation\n",
             "author": {
               "name": "exis[ai]",
               "email": "gotexis@gmail.com",
-              "time": 1778200660000
+              "time": 1778668368000
             },
             "committer": {
               "name": "exis[ai]",
               "email": "gotexis@gmail.com",
-              "time": 1778200660000
+              "time": 1778668469000
             },
             "branch": "main"
           },
@@ -138,7 +138,7 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "failed",
-                      "duration": 1797,
+                      "duration": 2593,
                       "error": {
                         "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected value: \u001b[32m501\u001b[39m\nReceived array: \u001b[31m[200, 404]\u001b[39m",
                         "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected value: \u001b[32m501\u001b[39m\nReceived array: \u001b[31m[200, 404]\u001b[39m\n    at /tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-revocation.spec.ts:33:24",
@@ -162,7 +162,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-05-08T22:27:51.315Z",
+                      "startTime": "2026-05-13T10:35:28.962Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -186,7 +186,7 @@
                       "workerIndex": 3,
                       "parallelIndex": 0,
                       "status": "failed",
-                      "duration": 791,
+                      "duration": 1051,
                       "error": {
                         "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected value: \u001b[32m501\u001b[39m\nReceived array: \u001b[31m[200, 404]\u001b[39m",
                         "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected value: \u001b[32m501\u001b[39m\nReceived array: \u001b[31m[200, 404]\u001b[39m\n    at /tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-revocation.spec.ts:33:24",
@@ -210,7 +210,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 1,
-                      "startTime": "2026-05-08T22:27:53.575Z",
+                      "startTime": "2026-05-13T10:35:32.020Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -287,7 +287,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-05-08T22:27:50.891Z",
+                      "startTime": "2026-05-13T10:35:28.538Z",
                       "annotations": [
                         {
                           "type": "skip",
@@ -341,7 +341,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-05-08T22:27:50.891Z",
+                      "startTime": "2026-05-13T10:35:28.538Z",
                       "annotations": [
                         {
                           "type": "skip",
@@ -397,7 +397,7 @@
                       "workerIndex": 1,
                       "parallelIndex": 1,
                       "status": "failed",
-                      "duration": 709,
+                      "duration": 969,
                       "error": {
                         "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m501\u001b[39m",
                         "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m501\u001b[39m\n    at /tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-token-issue.spec.ts:19:25",
@@ -421,7 +421,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-05-08T22:27:51.319Z",
+                      "startTime": "2026-05-13T10:35:28.965Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -445,7 +445,7 @@
                       "workerIndex": 2,
                       "parallelIndex": 1,
                       "status": "failed",
-                      "duration": 533,
+                      "duration": 291,
                       "error": {
                         "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m501\u001b[39m",
                         "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m501\u001b[39m\n    at /tmp/runner/tally-cloud/tally/tally/apps/cloud/tests/e2e/agent-token-issue.spec.ts:19:25",
@@ -469,7 +469,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 1,
-                      "startTime": "2026-05-08T22:27:52.494Z",
+                      "startTime": "2026-05-13T10:35:30.398Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -505,8 +505,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-05-08T22:27:50.865Z",
-    "duration": 3547.7479999999996,
+    "startTime": "2026-05-13T10:35:28.511Z",
+    "duration": 4607.092000000001,
     "expected": 0,
     "skipped": 2,
     "unexpected": 2,

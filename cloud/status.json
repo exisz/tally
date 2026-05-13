@@ -1,1 +1,1 @@
-{"surface":"cloud","passed":0,"failed":0,"duration":0,"ts":""}
+{"surface":"cloud","passed":0,"failed":2,"flaky":0,"skipped":2,"duration":4607.092000000001,"ts":"2026-05-13T10:35:36Z","sha":"38f389e49a491a0ae622b53ba5bbd1e60cade16c"}
