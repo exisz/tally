@@ -1,79 +1,34 @@
 <!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="utf-8"/>
-<title>Tally · E2E Trends</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Tally additional data pipe · Trends</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-  body { font-family: system-ui; max-width: 1200px; margin: 0 auto; padding: 20px; background:#0b0f17; color:#e5e7eb; }
-  canvas { max-height: 420px; background:#111827; border-radius:8px; padding:10px; }
-  .back { display:inline-block; margin-bottom:20px; color:#a78bfa; text-decoration:none; }
-  h1, h2 { color:#fff; }
-  .lede { opacity:0.7; }
+  body { font-family: system-ui, sans-serif; max-width: 1040px; margin:0 auto; padding:28px; background:#090d16; color:#e5e7eb; }
+  a { color:#c4b5fd; } canvas { background:#111827; border:1px solid #1f2937; border-radius:14px; padding:14px; }
 </style>
 </head><body>
-<a class="back" href="index.html">← Back to dashboard</a>
-<h1>📈 Tally E2E — Trends</h1>
-<p class="lede">Four datasets: <strong>desktop-mac</strong>, <strong>desktop-linux</strong>, <strong>cloud</strong>, <strong>total</strong>. Each surface writes its own row; aggregator sums them as <code>total</code>.</p>
-<h2>Pass rate (%)</h2><canvas id="passRate"></canvas>
-<h2>Duration (s)</h2><canvas id="duration"></canvas>
+<a href="index.html">← Back</a>
+<h1>📈 Additional data pipe trends</h1>
+<p>Single-suite Vitest results from <code>additional-data-pipe/results.csv</code>.</p>
+<canvas id="passRate"></canvas>
 <script>
-async function loadCsv(path) {
-  try {
-    const r = await fetch(path, { cache: 'no-store' });
-    if (!r.ok) return [];
-    const csv = await r.text();
-    return csv.trim().split('\n').slice(1).filter(Boolean).map(line => {
-      const c = line.split(',');
-      return { ts: c[0], sha: c[1], duration: +c[2], total: +c[3], passed: +c[4], failed: +c[5] };
-    });
-  } catch (_) { return []; }
+async function loadCsv() {
+  const r = await fetch('additional-data-pipe/results.csv', { cache: 'no-store' });
+  if (!r.ok) return [];
+  const text = await r.text();
+  return text.trim().split('\n').slice(1).filter(Boolean).map(line => {
+    const [ts, sha, duration, total, passed, failed] = line.split(',');
+    return { ts, sha, duration:+duration, total:+total, passed:+passed, failed:+failed };
+  });
 }
-function rate(rows) { return rows.map(r => r.total ? Math.round(r.passed / r.total * 100) : 0); }
-function dur(rows)  { return rows.map(r => Math.round(r.duration / 1000)); }
-function labels(rows) { return rows.map(r => (r.ts || '').slice(5,16)); }
-
 (async () => {
-  const [mac, linux, cloud] = await Promise.all([
-    loadCsv('desktop/mac/results.csv'),
-    loadCsv('desktop/linux/results.csv'),
-    loadCsv('cloud/results.csv'),
-  ]);
-  // Synthetic "total" series — average pass-rate across the three (ignores empties).
-  const N = Math.max(mac.length, linux.length, cloud.length);
-  const totalRows = [];
-  for (let i = 0; i < N; i++) {
-    const m = mac[mac.length - N + i], l = linux[linux.length - N + i], c = cloud[cloud.length - N + i];
-    const present = [m, l, c].filter(Boolean);
-    if (!present.length) continue;
-    totalRows.push({
-      ts: (m || l || c).ts,
-      duration: present.reduce((s, r) => s + (r.duration || 0), 0),
-      total: present.reduce((s, r) => s + (r.total || 0), 0),
-      passed: present.reduce((s, r) => s + (r.passed || 0), 0),
-      failed: present.reduce((s, r) => s + (r.failed || 0), 0),
-    });
-  }
-  const lbl = labels(cloud.length ? cloud : (linux.length ? linux : (mac.length ? mac : totalRows)));
-
+  const rows = await loadCsv();
   new Chart(document.getElementById('passRate'), {
     type: 'line',
-    data: { labels: lbl, datasets: [
-      { label: 'desktop-mac',   data: rate(mac),   borderColor: '#36d399', tension: 0.3, fill: false },
-      { label: 'desktop-linux', data: rate(linux), borderColor: '#fbbd23', tension: 0.3, fill: false },
-      { label: 'cloud',         data: rate(cloud), borderColor: '#7c3aed', tension: 0.3, fill: false },
-      { label: 'total',         data: rate(totalRows), borderColor: '#f87272', tension: 0.3, fill: false, borderDash: [4,4] },
-    ]},
-    options: { scales: { y: { min: 0, max: 100, grid: { color: '#1f2937' } }, x: { grid: { color: '#1f2937' } } } }
-  });
-  new Chart(document.getElementById('duration'), {
-    type: 'line',
-    data: { labels: lbl, datasets: [
-      { label: 'desktop-mac',   data: dur(mac),   borderColor: '#36d399', tension: 0.3, fill: false },
-      { label: 'desktop-linux', data: dur(linux), borderColor: '#fbbd23', tension: 0.3, fill: false },
-      { label: 'cloud',         data: dur(cloud), borderColor: '#7c3aed', tension: 0.3, fill: false },
-      { label: 'total',         data: dur(totalRows), borderColor: '#f87272', tension: 0.3, fill: false, borderDash: [4,4] },
-    ]},
-    options: { scales: { y: { min: 0, grid: { color: '#1f2937' } }, x: { grid: { color: '#1f2937' } } } }
+    data: { labels: rows.map(r => (r.ts || '').slice(5,16)), datasets: [{ label:'pass rate %', data: rows.map(r => r.total ? Math.round(r.passed / r.total * 100) : 0), borderColor:'#a78bfa', tension:.3 }]},
+    options: { scales: { y: { min:0, max:100 } } }
   });
 })();
 </script>

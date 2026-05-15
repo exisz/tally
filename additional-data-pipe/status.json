@@ -1,0 +1,13 @@
+{
+  "suite": "additional-data-pipe",
+  "runner": "vitest",
+  "reportKind": "headless-html",
+  "passed": 4,
+  "failed": 0,
+  "pending": 0,
+  "total": 4,
+  "durationMs": 6,
+  "startedAt": "2026-05-15T04:54:38.210Z",
+  "sha": "2e347f5f88634a175a757ea80534d127fa8777ff",
+  "success": true
+}
