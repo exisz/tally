@@ -1,23 +1,22 @@
 ---
-id: dna://project/tally
-type: project
+id: dna://component/tally-aw-bridge
+type: component
 managed_by: dna://agent/planetbuild
 title: Tally — LifeOS desktop ActivityWatch data source / export bridge
 derives_from: https://github.com/ActivityWatch/activitywatch
-ticket: PLANET-1470
+ticket: PLANET-1636
 spec_version: 2.1
 spec_authored: 2026-05-02
 spec_revised: 2026-05-10  # Emperor pivot: Tally remains as LifeOS desktop data source/export bridge
-status: active_bridge_only
+status: active_lifeforge_component
 paired_product: dna://project/lifeforge
 active_tickets:
   - PLANET-1636
   - PLANET-1637
 
-discord: "channel:1500117146951356519"
 repo: exisz/tally
 local_clone: /Users/c/dev/tally
-e2e_dashboard: https://exisz.github.io/tally/
+component_report: https://exisz.github.io/tally/
 ---
 
 # Tally — LifeOS desktop ActivityWatch data source / export bridge
@@ -109,5 +108,5 @@ The remaining in-repo implementation is `src/bridge/lifeos-exporter.ts`:
 - `LifeOsExporter.exportOnce()` sends explicit, incremental, deduped AW events to LifeOS.
 - Payload source is fixed to `tally-aw-bridge`; LifeForge owns the receiving schema and UX.
 
-This is a handoff adapter, not a renewed Tally product surface. GitHub Actions/Playwright workflows were intentionally removed after archival and must not be recreated here.
+This is a handoff adapter, not a renewed Tally product surface. Playwright/Electron/cloud product workflows must not be recreated here; the only allowed report is the headless Vitest additional-data-pipe report published for central testing visibility.
 

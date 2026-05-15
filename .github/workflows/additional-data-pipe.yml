@@ -1,0 +1,51 @@
+name: Additional data pipe report
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/bridge/**'
+      - 'tests/bridge/**'
+      - 'scripts/build-dashboard-root.sh'
+      - 'scripts/write-test-status.mjs'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'vitest.config.ts'
+      - '.github/workflows/additional-data-pipe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: tally-additional-data-pipe-pages
+  cancel-in-progress: true
+
+jobs:
+  report:
+    name: Headless Vitest bridge report
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.0.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --no-frozen-lockfile
+      - name: Run single additional-data-pipe suite
+        run: pnpm test:report
+      - name: Build dashboard shell
+        run: |
+          mkdir -p public/additional-data-pipe
+          cp -R test-results/html/. public/additional-data-pipe/
+          scripts/build-dashboard-root.sh public
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+      - uses: actions/deploy-pages@v4
