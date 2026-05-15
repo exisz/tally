@@ -15,9 +15,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: tally-additional-data-pipe-pages
@@ -27,9 +25,6 @@ jobs:
   report:
     name: Headless Vitest bridge report
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -44,12 +39,21 @@ jobs:
         run: pnpm test:report
       - name: Build dashboard shell
         run: |
+          set -euo pipefail
           mkdir -p public/additional-data-pipe
           cp -R test-results/html/. public/additional-data-pipe/
+
+          # Preserve the existing trend history for this one component suite.
+          git fetch origin gh-pages --depth=1 2>/dev/null || true
+          git show origin/gh-pages:additional-data-pipe/results.csv > /tmp/existing-results.csv 2>/dev/null || true
+          if [ -s /tmp/existing-results.csv ]; then
+            tail -n +2 public/additional-data-pipe/results.csv >> /tmp/existing-results.csv
+            mv /tmp/existing-results.csv public/additional-data-pipe/results.csv
+          fi
+
           scripts/build-dashboard-root.sh public
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - name: Deploy component report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: public
-      - id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
